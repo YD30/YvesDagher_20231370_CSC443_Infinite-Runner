@@ -8,6 +8,7 @@ public class GameManager : MonoBehaviour
 
     public float ScrollSpeed { get; private set; }
     public float Distance { get; private set; }
+    public int Coins { get; private set; }
 
     public bool IsGameOver = false;
 
@@ -24,4 +25,6 @@ public class GameManager : MonoBehaviour
         ScrollSpeed = Mathf.Min(ScrollSpeed + config.speedIncreaseRate * Time.deltaTime, config.maxSpeed);
         Distance += ScrollSpeed * Time.deltaTime;
     }
+
+    public void AddCoin() => Coins++;
 }

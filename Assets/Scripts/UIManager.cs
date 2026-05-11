@@ -7,6 +7,8 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject GameOverPanel;
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI finalText;
+    [SerializeField] private TextMeshProUGUI coinText;
+    [SerializeField] private TextMeshProUGUI finalCoinText;
 
     private bool shown = false;
 
@@ -14,7 +16,10 @@ public class UIManager : MonoBehaviour
     {
         if (GameOverPanel == null) return;
          float score = GameManager.Instance.Distance;
-         scoreText.text = $"Score: {score:0}";
+         int coins = GameManager.Instance.Coins;
+
+        scoreText.text = $"Score: {score:0}";
+        coinText.text = coins.ToString();
 
         if (GameManager.Instance.IsGameOver && !shown)
         {
@@ -22,6 +27,7 @@ public class UIManager : MonoBehaviour
             GameOverPanel.SetActive(true);
             shown = true;
             finalText.text = $"Final Score: {score:0}";
+            finalCoinText.text = $"Final Coins: {coins}";
         }
     }
 
