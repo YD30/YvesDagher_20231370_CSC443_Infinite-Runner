@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.IsGameOver) return;
         _yVel += gravity * Time.deltaTime;
         _y += _yVel * Time.deltaTime;
         if (_y < 0f) { _y = 0f; _yVel = 0f; }

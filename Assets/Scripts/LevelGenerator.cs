@@ -38,6 +38,7 @@ public class LevelGenerator : MonoBehaviour
 
     void Update()
     {
+        if (GameManager.Instance.IsGameOver) return;
         // Treadmill: slide every active chunk backward by speed * dt.
         float scroll = GameManager.Instance.ScrollSpeed * Time.deltaTime;
         for (int i = 0; i < _activeChunks.Count; i++)
