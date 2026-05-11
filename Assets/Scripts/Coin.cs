@@ -3,18 +3,34 @@ using UnityEngine;
 public class Coin : MonoBehaviour
 {
     [SerializeField] private float rotationSpeed = 180f;
-  
-    private void OnTriggerEnter(Collider other)
+
+    private void Update()
     {
-        if (other.CompareTag("Player"))
+        transform.Rotate(
+            Vector3.up,
+            rotationSpeed * Time.deltaTime,
+            Space.World);
+    }
+
+    private void OnEnable()
+    {
+        Collider col = GetComponent<Collider>();
+
+        if (col != null)
         {
-            GameManager.Instance.AddCoin();
-            gameObject.SetActive(false);
+            col.enabled = false;
+            col.enabled = true;
         }
     }
 
-    void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        transform.Rotate(Vector3.up, rotationSpeed * Time.deltaTime);
+        Debug.Log("Coin Collected");
+        if (!other.CompareTag("Player"))
+            return;
+
+        GameManager.Instance.AddCoin();
+
+        gameObject.SetActive(false);
     }
 }

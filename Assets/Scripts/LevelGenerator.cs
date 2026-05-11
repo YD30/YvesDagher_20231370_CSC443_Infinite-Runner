@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class LevelGenerator : MonoBehaviour
@@ -13,6 +13,19 @@ public class LevelGenerator : MonoBehaviour
 
     [Header("Gameplay")]
     [SerializeField] private float minSwitchRoom = 6f;
+
+    [Header("Coins")]
+    [SerializeField] private Coin coinPrefab;
+    [SerializeField] private int coinPoolSize = 50;
+
+    [SerializeField] private float coinHeight = 0.5f;
+    [SerializeField] private float coinSpacing = 2f;
+
+    [SerializeField] private int minCoinsPerLine = 3;
+    [SerializeField] private int maxCoinsPerLine = 8;
+
+    private ObjectPool<Coin> _coinPool;
+    private readonly List<Coin> _activeCoins = new();
 
     private Chunk[] _prefabTemplates;
 
@@ -44,6 +57,8 @@ public class LevelGenerator : MonoBehaviour
             _pools[template] =
                 new ObjectPool<Chunk>(template, transform, chunkPoolSize);
         }
+
+        _coinPool = new ObjectPool<Coin>(coinPrefab, transform, coinPoolSize);
     }
 
     void Start()
@@ -98,16 +113,12 @@ public class LevelGenerator : MonoBehaviour
             Quaternion.identity);
 
         _activeChunks.Add(chunk);
-
         _instanceToPrefab[chunk] = prefab;
-
         _spawnZ += chunk.Length;
-
         _currentExit = chunk.Exit;
-
         _preferredLane = chunk.RecommendedLane;
-
         _lastExitBuffer = chunk.ExitBuffer;
+        GenerateCoins(chunk);
     }
 
     private void SpawnNextChunk()
@@ -130,21 +141,15 @@ public class LevelGenerator : MonoBehaviour
             Quaternion.identity);
 
         _activeChunks.Add(chunk);
-
         _instanceToPrefab[chunk] = prefab;
-
         _spawnZ += chunk.Length;
-
         _currentExit = chunk.Exit;
-
         _preferredLane = chunk.RecommendedLane;
-
         _lastExitBuffer = chunk.ExitBuffer;
+        GenerateCoins(chunk);
     }
 
-    private Chunk PickNextChunk(
-        LaneMask requiredOpen,
-        float lastExitBuffer)
+    private Chunk PickNextChunk( LaneMask requiredOpen, float lastExitBuffer)
     {
         _candidateBuffer.Clear();
 
@@ -185,14 +190,51 @@ public class LevelGenerator : MonoBehaviour
             Random.Range(0, _candidateBuffer.Count)];
     }
 
+    private void GenerateCoins(Chunk chunk)
+    {
+        int lane = Random.Range(-1, 2);
+
+        int coinCount =
+            Random.Range(minCoinsPerLine, maxCoinsPerLine + 1);
+
+        float localStartZ = -chunk.Length * 0.35f;
+
+        float laneX = lane * 2f;
+
+        for (int i = 0; i < coinCount; i++)
+        {
+            float localZ = localStartZ + i * coinSpacing;
+
+            Vector3 localPos = new Vector3(laneX, coinHeight, localZ);
+
+            // 🔥 IMPORTANT: check in LOCAL chunk space using OverlapBox
+            Vector3 worldPos = chunk.transform.TransformPoint(localPos);
+
+            bool blocked = Physics.OverlapBox(
+                worldPos,
+                new Vector3(0.4f, 0.4f, 0.4f),
+                Quaternion.identity,
+                LayerMask.GetMask("Obstacle")
+            ).Length > 0;
+
+            if (blocked)
+                continue;
+
+            Coin coin = _coinPool.Get(chunk.transform);
+
+            coin.transform.localPosition = localPos;
+            coin.transform.localRotation = Quaternion.identity;
+
+            coin.gameObject.SetActive(true);
+        }
+    }
+
     private void Recycle(int index)
     {
         Chunk chunk = _activeChunks[index];
 
         _pools[_instanceToPrefab[chunk]].Return(chunk);
-
         _instanceToPrefab.Remove(chunk);
-
         _activeChunks.RemoveAt(index);
     }
 }
