@@ -10,6 +10,7 @@ public class LevelGenerator : MonoBehaviour
     [Header("Streaming")]
     [SerializeField] private float spawnAhead = 80f;
     [SerializeField] private float recycleBehind = 20f;
+    [SerializeField] private float minSwitchRoom = 6f;
 
     private Chunk[] _prefabTemplates;
     private readonly Dictionary<Chunk, ObjectPool<Chunk>> _pools = new();
@@ -18,7 +19,8 @@ public class LevelGenerator : MonoBehaviour
     private readonly List<Chunk> _candidateBuffer = new();
 
     private float _spawnZ;
-    private LaneMask _currentExit = LaneMask.All; // first chunk has no upstream constraint
+    private LaneMask _currentExit = LaneMask.All;
+    private float _lastExitBuffer = 999f;
 
     void Awake()
     {
@@ -33,22 +35,21 @@ public class LevelGenerator : MonoBehaviour
 
     void Start()
     {
+        SpawnFirstSafeChunk();
         while (_spawnZ < spawnAhead) SpawnNextChunk();
     }
 
     void Update()
     {
         if (GameManager.Instance.IsGameOver) return;
-        // Treadmill: slide every active chunk backward by speed * dt.
+
         float scroll = GameManager.Instance.ScrollSpeed * Time.deltaTime;
         for (int i = 0; i < _activeChunks.Count; i++)
             _activeChunks[i].transform.position += Vector3.back * scroll;
         _spawnZ -= scroll;
 
-        // Spawn ahead until we've filled the visible distance.
         while (_spawnZ < spawnAhead) SpawnNextChunk();
 
-        // Recycle anything that has fallen far behind the camera.
         for (int i = _activeChunks.Count - 1; i >= 0; i--)
         {
             Chunk c = _activeChunks[i];
@@ -57,13 +58,29 @@ public class LevelGenerator : MonoBehaviour
         }
     }
 
+    private void SpawnFirstSafeChunk()
+    {
+        Chunk prefab = _prefabTemplates[0];
+        Chunk chunk = _pools[prefab].Get(transform);
+
+        chunk.transform.SetPositionAndRotation(
+            new Vector3(0f, 0f, _spawnZ + chunk.Length * 0.5f),
+            Quaternion.identity);
+
+        _activeChunks.Add(chunk);
+        _instanceToPrefab[chunk] = prefab;
+
+        _spawnZ += chunk.Length;
+        _currentExit = chunk.Exit;
+        _lastExitBuffer = chunk.ExitBuffer;
+    }
+
     private void SpawnNextChunk()
     {
-        Chunk prefab = PickNextChunk(_currentExit);
+        Chunk prefab = PickNextChunk(_currentExit, _lastExitBuffer);
         if (prefab == null)
         {
-            Debug.LogError("LevelGenerator: no chunk in the prefab list connects to the current exit state. " +
-                           "Add a chunk whose Entry includes one of the open lanes.");
+            Debug.LogError("LevelGenerator: no chunk connects to the current exit state.");
             return;
         }
 
@@ -76,20 +93,48 @@ public class LevelGenerator : MonoBehaviour
         _instanceToPrefab[chunk] = prefab;
         _spawnZ += chunk.Length;
         _currentExit = chunk.Exit;
+        _lastExitBuffer = chunk.ExitBuffer;
     }
 
-    // Socket matching: keep prefabs whose Entry shares at least one open lane with requiredOpen.
-    private Chunk PickNextChunk(LaneMask requiredOpen)
+    private Chunk PickNextChunk(LaneMask requiredOpen, float lastExitBuffer)
     {
         _candidateBuffer.Clear();
+        Chunk bestFallback = null;
+        float bestBuffer = -1f;
+
         for (int i = 0; i < _prefabTemplates.Length; i++)
         {
             Chunk t = _prefabTemplates[i];
-            if (requiredOpen.ConnectsTo(t.Entry))
+            if (!requiredOpen.ConnectsTo(t.Entry)) continue;
+
+            bool bufferOk = (lastExitBuffer + t.EntryBuffer) >= minSwitchRoom;
+            if (bufferOk)
+            {
                 _candidateBuffer.Add(t);
+            }
+            else
+            {
+                // track the best fallback in case no candidate passes buffer check
+                if (t.EntryBuffer > bestBuffer)
+                {
+                    bestBuffer = t.EntryBuffer;
+                    bestFallback = t;
+                }
+            }
         }
-        if (_candidateBuffer.Count == 0) return null;
-        return _candidateBuffer[Random.Range(0, _candidateBuffer.Count)];
+
+        if (_candidateBuffer.Count > 0)
+            return _candidateBuffer[Random.Range(0, _candidateBuffer.Count)];
+
+        // no chunk had enough buffer — pick the one with the most entry breathing room
+        if (bestFallback != null)
+        {
+            Debug.LogWarning("LevelGenerator: no chunk met minSwitchRoom, using best available fallback.");
+            return bestFallback;
+        }
+
+        Debug.LogError("LevelGenerator: no chunk connects to the current exit state at all.");
+        return null;
     }
 
     private void Recycle(int index)
