@@ -80,6 +80,10 @@ MonoBehaviour:
   length: 10
   entry: -1
   exit: -1
+  recommendedLane: 2
+  entryBuffer: 15
+  exitBuffer: 15
+  safeCoinLanes: -1
 --- !u!1001 &3950652156614501324
 PrefabInstance:
   m_ObjectHideFlags: 0

@@ -192,39 +192,45 @@ public class LevelGenerator : MonoBehaviour
 
     private void GenerateCoins(Chunk chunk)
     {
-        int lane = Random.Range(-1, 2);
+        List<int> availableLanes = new List<int>();
+
+        if ((chunk.SafeCoinLanes & LaneMask.Left) != 0) availableLanes.Add(-1);
+        if ((chunk.SafeCoinLanes & LaneMask.Middle) != 0) availableLanes.Add(0);
+        if ((chunk.SafeCoinLanes & LaneMask.Right) != 0) availableLanes.Add(1);
+
+        if (availableLanes.Count == 0)
+            return;
+
+        int lane = availableLanes[Random.Range(0, availableLanes.Count)];
 
         int coinCount =
             Random.Range(minCoinsPerLine, maxCoinsPerLine + 1);
 
-        float localStartZ = -chunk.Length * 0.35f;
+        // ✅ ADDITION: safe spacing inside chunk bounds
+        float safePadding = 2.5f;
 
-        float laneX = lane * 2f;
+        float startZ = -chunk.Length * 0.5f + safePadding;
+        float endZ = chunk.Length * 0.5f - safePadding;
+
+        float usableLength = endZ - startZ;
+
+        float step = (coinCount > 1)
+            ? usableLength / (coinCount - 1)
+            : 0f;
 
         for (int i = 0; i < coinCount; i++)
         {
-            float localZ = localStartZ + i * coinSpacing;
-
-            Vector3 localPos = new Vector3(laneX, coinHeight, localZ);
-
-            // 🔥 IMPORTANT: check in LOCAL chunk space using OverlapBox
-            Vector3 worldPos = chunk.transform.TransformPoint(localPos);
-
-            bool blocked = Physics.OverlapBox(
-                worldPos,
-                new Vector3(0.4f, 0.4f, 0.4f),
-                Quaternion.identity,
-                LayerMask.GetMask("Obstacle")
-            ).Length > 0;
-
-            if (blocked)
-                continue;
-
             Coin coin = _coinPool.Get(chunk.transform);
 
-            coin.transform.localPosition = localPos;
-            coin.transform.localRotation = Quaternion.identity;
+            float z = startZ + step * i;
 
+            coin.transform.localPosition = new Vector3(
+                lane * 2f,
+                coinHeight,
+                z
+            );
+
+            coin.transform.localRotation = Quaternion.identity;
             coin.gameObject.SetActive(true);
         }
     }

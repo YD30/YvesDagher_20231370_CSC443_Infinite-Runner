@@ -46,6 +46,16 @@ public class Chunk : MonoBehaviour
     public float EntryBuffer => entryBuffer;
     public float ExitBuffer => exitBuffer;
 
+    [SerializeField] private LaneMask safeCoinLanes = LaneMask.All;
+
+    public LaneMask SafeCoinLanes => safeCoinLanes;
+
+    public bool HasObstacleInLane(int lane)
+    {
+        // optional if you want manual control later
+        return false;
+    }
+
     // Visual gizmos
     void OnDrawGizmos()
     {

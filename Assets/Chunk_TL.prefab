@@ -141,6 +141,22 @@ PrefabInstance:
       propertyPath: entry
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 1556986383670522796, guid: 2209fd66c6b2a47fa9d17f2c466e3919, type: 3}
+      propertyPath: exitBuffer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1556986383670522796, guid: 2209fd66c6b2a47fa9d17f2c466e3919, type: 3}
+      propertyPath: entryBuffer
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 1556986383670522796, guid: 2209fd66c6b2a47fa9d17f2c466e3919, type: 3}
+      propertyPath: safeCoinLanes
+      value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1556986383670522796, guid: 2209fd66c6b2a47fa9d17f2c466e3919, type: 3}
+      propertyPath: recommendedLane
+      value: 6
+      objectReference: {fileID: 0}
     - target: {fileID: 1723443905544339492, guid: 2209fd66c6b2a47fa9d17f2c466e3919, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
