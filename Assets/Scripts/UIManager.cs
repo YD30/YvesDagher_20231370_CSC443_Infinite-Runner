@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using UnityEngine.InputSystem;
+using System.Collections;
 
 public class UIManager : MonoBehaviour
 {
@@ -14,6 +15,7 @@ public class UIManager : MonoBehaviour
     [Header("HUD")]
     [SerializeField] private TextMeshProUGUI scoreText;
     [SerializeField] private TextMeshProUGUI coinText;
+    [SerializeField] private TextMeshProUGUI countdownText;
 
     [Header("Final Score")]
     [SerializeField] private TextMeshProUGUI finalText;
@@ -88,11 +90,32 @@ public class UIManager : MonoBehaviour
 
     public void Resume()
     {
-        if (PausePanel != null)
-            PausePanel.SetActive(false);
+        StartCoroutine(ResumeCountdown());
+    }
+
+    private IEnumerator ResumeCountdown()
+    {
+        PausePanel.SetActive(false);
+
+        countdownText.gameObject.SetActive(true);
+
+        yield return StartCoroutine(ShowCountdownNumber("3"));
+        yield return StartCoroutine(ShowCountdownNumber("2"));
+        yield return StartCoroutine(ShowCountdownNumber("1"));
+
+        countdownText.text = "GO!";
+        yield return new WaitForSecondsRealtime(0.5f);
+
+        countdownText.gameObject.SetActive(false);
 
         Time.timeScale = 1f;
         paused = false;
+    }
+
+    private IEnumerator ShowCountdownNumber(string number)
+    {
+        countdownText.text = number;
+        yield return new WaitForSecondsRealtime(1f);
     }
 
     public void Restart()
