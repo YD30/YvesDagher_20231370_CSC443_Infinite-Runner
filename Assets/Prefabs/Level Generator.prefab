@@ -1,0 +1,65 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &4849001004468895880
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8100174305728863633}
+  - component: {fileID: 6053513015064086987}
+  m_Layer: 0
+  m_Name: Level Generator
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8100174305728863633
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4849001004468895880}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.10039, y: 0, z: 1.31501}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6053513015064086987
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4849001004468895880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f460430b1614e63937a78aa2e962ee, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::LevelGenerator
+  chunkPrefabs:
+  - {fileID: 8712000992499624680, guid: 2209fd66c6b2a47fa9d17f2c466e3919, type: 3}
+  - {fileID: 6230059130620351680, guid: 7ca0b3ebd5ce84f418cdb6ca1acc40c6, type: 3}
+  - {fileID: 6230059130620351680, guid: 517932deb26594102a6561c2e7d1847b, type: 3}
+  - {fileID: 6230059130620351680, guid: 5d1896fd335bb4d4e8c61dc976a85a68, type: 3}
+  - {fileID: 6230059130620351680, guid: 1061128312916450eb2d3aa8afb40be9, type: 3}
+  - {fileID: 6230059130620351680, guid: 72d5ed870fd9043ad9d413124fe447f7, type: 3}
+  - {fileID: 6230059130620351680, guid: 7ca0b3ebd5ce84f418cdb6ca1acc40c6, type: 3}
+  - {fileID: 6230059130620351680, guid: 96a36636d1996ab4d9da2ca52909e34f, type: 3}
+  chunkPoolSize: 8
+  spawnAhead: 100
+  recycleBehind: 30
+  minSwitchRoom: 6
+  coinPrefab: {fileID: 2211530419734210805, guid: bdbc189c449dde34b9939ecc430586bb, type: 3}
+  coinPoolSize: 50
+  coinHeight: 0.5
+  coinSpacing: 2
+  minCoinsPerLine: 3
+  maxCoinsPerLine: 8

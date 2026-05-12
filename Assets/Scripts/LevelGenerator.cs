@@ -19,7 +19,7 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private int coinPoolSize = 50;
 
     [SerializeField] private float coinHeight = 0.5f;
-    [SerializeField] private float coinSpacing = 2f;
+    //[SerializeField] private float coinSpacing = 2f;
 
     [SerializeField] private int minCoinsPerLine = 3;
     [SerializeField] private int maxCoinsPerLine = 8;
