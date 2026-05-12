@@ -206,7 +206,7 @@ public class LevelGenerator : MonoBehaviour
         int coinCount =
             Random.Range(minCoinsPerLine, maxCoinsPerLine + 1);
 
-        // ✅ ADDITION: safe spacing inside chunk bounds
+        //  safe spacing inside chunk bounds
         float safePadding = 2.5f;
 
         float startZ = -chunk.Length * 0.5f + safePadding;

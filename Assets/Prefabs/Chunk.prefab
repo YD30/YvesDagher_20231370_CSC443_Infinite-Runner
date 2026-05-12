@@ -46,7 +46,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Chunk
   length: 10
-  rowsPerChunk: 4
+  entry: -1
+  exit: -1
+  recommendedLane: 2
+  entryBuffer: 3
+  exitBuffer: 3
+  safeCoinLanes: -1
 --- !u!1 &2527492454966469410
 GameObject:
   m_ObjectHideFlags: 0
