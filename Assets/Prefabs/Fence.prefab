@@ -11,8 +11,6 @@ GameObject:
   - component: {fileID: 1422483308110751100}
   - component: {fileID: 3554454029928563245}
   - component: {fileID: 7367615851241206594}
-  - component: {fileID: 5113157807955790456}
-  - component: {fileID: 7025178427233863848}
   m_Layer: 0
   m_Name: FenceR
   m_TagString: Untagged
@@ -92,40 +90,6 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!64 &5113157807955790456
-MeshCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 101264369237052472}
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_IsTrigger: 0
-  m_ProvidesContacts: 0
-  m_Enabled: 1
-  serializedVersion: 5
-  m_Convex: 0
-  m_CookingOptions: 30
-  m_Mesh: {fileID: 402420634168417622, guid: 7f3c62b05a61522409bde59e829d1510, type: 3}
---- !u!114 &7025178427233863848
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 101264369237052472}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f44ba7874395b90459561dd0626d5fff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Obstacle
 --- !u!1 &1356152199138749451
 GameObject:
   m_ObjectHideFlags: 0
@@ -136,8 +100,8 @@ GameObject:
   m_Component:
   - component: {fileID: 6882817825032109531}
   - component: {fileID: 1969523353965291314}
-  - component: {fileID: 2854168854635504455}
-  - component: {fileID: 4787852339478705534}
+  - component: {fileID: 6629324083875394061}
+  - component: {fileID: 6669949867247265859}
   m_Layer: 3
   m_Name: Fence
   m_TagString: Untagged
@@ -211,19 +175,7 @@ MeshRenderer:
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!114 &2854168854635504455
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1356152199138749451}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f44ba7874395b90459561dd0626d5fff, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Obstacle
---- !u!65 &4787852339478705534
+--- !u!65 &6629324083875394061
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -242,8 +194,20 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 2.3371904, y: 1.0777467, z: 0.2736796}
-  m_Center: {x: 0.014632954, y: 0.5017746, z: -0.007291776}
+  m_Size: {x: 2.3723898, y: 1.0399331, z: 0.27310443}
+  m_Center: {x: -0.01652438, y: 0.52042526, z: 0.007747947}
+--- !u!114 &6669949867247265859
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1356152199138749451}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f44ba7874395b90459561dd0626d5fff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::ObstacleKill
 --- !u!1 &3687759428744575507
 GameObject:
   m_ObjectHideFlags: 0

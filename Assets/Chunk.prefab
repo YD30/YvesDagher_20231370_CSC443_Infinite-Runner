@@ -89,8 +89,8 @@ MonoBehaviour:
   entry: -1
   exit: -1
   recommendedLane: 2
-  entryBuffer: 15
-  exitBuffer: 15
+  entryBuffer: 0
+  exitBuffer: 0
   safeCoinLanes: -1
 --- !u!1001 &1883464933268101610
 PrefabInstance:

@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: M_Curved
-  m_Shader: {fileID: 4800000, guid: fa2bc0dadccc4418da7e23a162ba1ffa, type: 3}
+  m_Shader: {fileID: 4800000, guid: 303a6c19b25c9449e8c4fc4580a8412c, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
   m_ValidKeywords: []
@@ -115,6 +115,7 @@ Material:
     - _XRMotionVectorsPass: 1
     - _ZWrite: 1
     m_Colors:
+    - _AmbientColor: {r: 0.31999996, g: 0.33999997, b: 0.39999998, a: 1}
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}

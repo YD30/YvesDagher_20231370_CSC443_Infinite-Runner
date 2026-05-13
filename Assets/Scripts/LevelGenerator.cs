@@ -11,15 +11,11 @@ public class LevelGenerator : MonoBehaviour
     [SerializeField] private float spawnAhead = 80f;
     [SerializeField] private float recycleBehind = 20f;
 
-    [Header("Gameplay")]
-    [SerializeField] private float minSwitchRoom = 6f;
-
     [Header("Coins")]
     [SerializeField] private Coin coinPrefab;
     [SerializeField] private int coinPoolSize = 50;
 
     [SerializeField] private float coinHeight = 0.5f;
-    //[SerializeField] private float coinSpacing = 2f;
 
     [SerializeField] private int minCoinsPerLine = 3;
     [SerializeField] private int maxCoinsPerLine = 8;
@@ -41,8 +37,6 @@ public class LevelGenerator : MonoBehaviour
 
     // Subway Surfers-style flow memory
     private LaneMask _preferredLane = LaneMask.Middle;
-
-    private float _lastExitBuffer = 999f;
 
     void Awake()
     {
@@ -114,23 +108,22 @@ public class LevelGenerator : MonoBehaviour
 
         _activeChunks.Add(chunk);
         _instanceToPrefab[chunk] = prefab;
+
         _spawnZ += chunk.Length;
+
         _currentExit = chunk.Exit;
         _preferredLane = chunk.RecommendedLane;
-        _lastExitBuffer = chunk.ExitBuffer;
+
         GenerateCoins(chunk);
     }
 
     private void SpawnNextChunk()
     {
-        Chunk prefab =
-            PickNextChunk(_currentExit, _lastExitBuffer);
+        Chunk prefab = PickNextChunk(_currentExit);
 
         if (prefab == null)
         {
-            Debug.LogError(
-                "LevelGenerator: no valid chunk found.");
-
+            Debug.LogError("LevelGenerator: no valid chunk found.");
             return;
         }
 
@@ -142,14 +135,18 @@ public class LevelGenerator : MonoBehaviour
 
         _activeChunks.Add(chunk);
         _instanceToPrefab[chunk] = prefab;
+
         _spawnZ += chunk.Length;
+
         _currentExit = chunk.Exit;
         _preferredLane = chunk.RecommendedLane;
-        _lastExitBuffer = chunk.ExitBuffer;
+
         GenerateCoins(chunk);
+
+        Debug.Log($"Spawned chunk: {prefab.name}");
     }
 
-    private Chunk PickNextChunk( LaneMask requiredOpen, float lastExitBuffer)
+    private Chunk PickNextChunk(LaneMask requiredOpen)
     {
         _candidateBuffer.Clear();
 
@@ -157,29 +154,21 @@ public class LevelGenerator : MonoBehaviour
         {
             Chunk t = _prefabTemplates[i];
 
-            // Connectivity check
+            // Connectivity check only
             if (!requiredOpen.ConnectsTo(t.Entry))
                 continue;
 
-            // Reaction-time fairness check
-            bool bufferOk =
-                (lastExitBuffer + t.EntryBuffer) >= minSwitchRoom;
-
-            if (!bufferOk)
-                continue;
-
-            // Weighted flow continuity
+            // Optional flow preference
             bool followsFlow =
                 (t.Entry & _preferredLane) != 0;
 
-            if (followsFlow)
+            // Small extra chance for smoother flow
+            if (followsFlow && Random.value < 0.35f)
             {
-                // add extra weight
-                _candidateBuffer.Add(t);
                 _candidateBuffer.Add(t);
             }
 
-            // normal weight
+            // Normal weight
             _candidateBuffer.Add(t);
         }
 
@@ -194,19 +183,25 @@ public class LevelGenerator : MonoBehaviour
     {
         List<int> availableLanes = new List<int>();
 
-        if ((chunk.SafeCoinLanes & LaneMask.Left) != 0) availableLanes.Add(-1);
-        if ((chunk.SafeCoinLanes & LaneMask.Middle) != 0) availableLanes.Add(0);
-        if ((chunk.SafeCoinLanes & LaneMask.Right) != 0) availableLanes.Add(1);
+        if ((chunk.SafeCoinLanes & LaneMask.Left) != 0)
+            availableLanes.Add(-1);
+
+        if ((chunk.SafeCoinLanes & LaneMask.Middle) != 0)
+            availableLanes.Add(0);
+
+        if ((chunk.SafeCoinLanes & LaneMask.Right) != 0)
+            availableLanes.Add(1);
 
         if (availableLanes.Count == 0)
             return;
 
-        int lane = availableLanes[Random.Range(0, availableLanes.Count)];
+        int lane =
+            availableLanes[Random.Range(0, availableLanes.Count)];
 
         int coinCount =
             Random.Range(minCoinsPerLine, maxCoinsPerLine + 1);
 
-        //  safe spacing inside chunk bounds
+        // Safe spacing inside chunk bounds
         float safePadding = 2.5f;
 
         float startZ = -chunk.Length * 0.5f + safePadding;
@@ -238,7 +233,6 @@ public class LevelGenerator : MonoBehaviour
     private void Recycle(int index)
     {
         Chunk chunk = _activeChunks[index];
-
         _pools[_instanceToPrefab[chunk]].Return(chunk);
         _instanceToPrefab.Remove(chunk);
         _activeChunks.RemoveAt(index);

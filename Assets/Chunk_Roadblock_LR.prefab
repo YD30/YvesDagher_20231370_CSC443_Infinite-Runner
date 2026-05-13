@@ -18,7 +18,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6882817825032109531, guid: 0eb1f292f1af1da44bd59cd22f564130, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.158
       objectReference: {fileID: 0}
     - target: {fileID: 6882817825032109531, guid: 0eb1f292f1af1da44bd59cd22f564130, type: 3}
       propertyPath: m_LocalPosition.z
@@ -80,7 +80,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6882817825032109531, guid: 0eb1f292f1af1da44bd59cd22f564130, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.158
       objectReference: {fileID: 0}
     - target: {fileID: 6882817825032109531, guid: 0eb1f292f1af1da44bd59cd22f564130, type: 3}
       propertyPath: m_LocalPosition.z
@@ -154,11 +154,11 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 8f9ce512f4dc9fd4a9ffccd298eb1daa, type: 2}
     - target: {fileID: 1556986383670522796, guid: 2209fd66c6b2a47fa9d17f2c466e3919, type: 3}
       propertyPath: exitBuffer
-      value: 15
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1556986383670522796, guid: 2209fd66c6b2a47fa9d17f2c466e3919, type: 3}
       propertyPath: entryBuffer
-      value: 15
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1556986383670522796, guid: 2209fd66c6b2a47fa9d17f2c466e3919, type: 3}
       propertyPath: safeCoinLanes
@@ -285,7 +285,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6882817825032109531, guid: 0eb1f292f1af1da44bd59cd22f564130, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.158
       objectReference: {fileID: 0}
     - target: {fileID: 6882817825032109531, guid: 0eb1f292f1af1da44bd59cd22f564130, type: 3}
       propertyPath: m_LocalPosition.z
