@@ -12,9 +12,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float jumpVelocity = 8f;
     [SerializeField] private float gravity = -25f;
 
-    [Header("Ground")]
-    [SerializeField] private float defaultGroundY = 0f;
-
     private int _laneIndex;
 
     private float _y;
@@ -24,6 +21,12 @@ public class PlayerController : MonoBehaviour
 
     private float _groundY;
     private bool _isGrounded;
+
+    private float _lastGroundTime;
+    private const float groundGrace = 0.08f;
+
+    // ✅ FIX: stabilize ground value
+    private float _smoothedGroundY;
 
     void Awake()
     {
@@ -36,7 +39,9 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        _y = defaultGroundY;
+        _y = 0f;
+        _smoothedGroundY = 0f;
+        _groundY = 0f;
     }
 
     public void Move(InputAction.CallbackContext ctx)
@@ -48,7 +53,6 @@ public class PlayerController : MonoBehaviour
         else if (v.x < -0.5f && _prevMove.x >= -0.5f)
             TryChangeLane(-1);
 
-        // SINGLE JUMP ONLY
         if (v.y > 0.5f && _prevMove.y <= 0.5f && _isGrounded)
         {
             _yVel = jumpVelocity;
@@ -73,18 +77,13 @@ public class PlayerController : MonoBehaviour
     {
         float targetX = targetLane * laneOffset;
 
-        // IMPORTANT: check at BODY HEIGHT ONLY (not full capsule)
         Vector3 checkPos = new Vector3(
             targetX,
-            transform.position.y + 1.0f, // body height, not feet
-            transform.position.z + 0.2f  // slightly forward to avoid edge hits
+            transform.position.y + 1.0f,
+            transform.position.z + 0.3f
         );
 
-        Vector3 halfExtents = new Vector3(
-            0.35f, // narrower = no side extremity blocking
-            0.5f,  // only body zone
-            0.25f  // small forward depth
-        );
+        Vector3 halfExtents = new Vector3(0.4f, 0.6f, 0.3f);
 
         int mask = LayerMask.GetMask("Obstacle");
 
@@ -97,18 +96,13 @@ public class PlayerController : MonoBehaviour
 
         foreach (var hit in hits)
         {
-            // IGNORE OBSTACLES BELOW PLAYER (standing on top)
             if (hit.bounds.max.y < transform.position.y - 0.2f)
                 continue;
 
-            // IGNORE SIDE EXTREMITY GLITCH:
-            // if player is already almost aligned, don't false-block
-            float centerDistance = Mathf.Abs(hit.bounds.center.x - targetX);
+            float xDist = Mathf.Abs(hit.bounds.center.x - targetX);
 
-            if (centerDistance > 0.8f)
-                continue;
-
-            return true;
+            if (xDist < 0.9f)
+                return true;
         }
 
         return false;
@@ -126,10 +120,9 @@ public class PlayerController : MonoBehaviour
         _y += _yVel * Time.deltaTime;
 
         // -------------------------
-        // GROUND DETECTION (STABLE)
+        // GROUND DETECTION
         // -------------------------
-        _groundY = defaultGroundY;
-        _isGrounded = false;
+        bool hitGround = false;
 
         if (Physics.Raycast(
             transform.position + Vector3.up * 0.5f,
@@ -137,22 +130,19 @@ public class PlayerController : MonoBehaviour
             out RaycastHit hit,
             5f))
         {
-            ObstacleSurface surface =
-                hit.collider.GetComponent<ObstacleSurface>();
+            // ✅ FIX: smooth ground to remove jitter
+            _smoothedGroundY = Mathf.Lerp(_smoothedGroundY, hit.point.y, 0.25f);
 
-            if (surface != null)
-            {
-                _groundY = hit.collider.bounds.max.y;
-            }
-            else
-            {
-                _groundY = hit.point.y;
-            }
+            _groundY = _smoothedGroundY;
 
-            // grounded stability (no flicker)
             if (_y <= _groundY + 0.05f)
-                _isGrounded = true;
+            {
+                hitGround = true;
+                _lastGroundTime = Time.time;
+            }
         }
+
+        _isGrounded = (Time.time - _lastGroundTime) < groundGrace;
 
         // -------------------------
         // LANDING
@@ -161,7 +151,6 @@ public class PlayerController : MonoBehaviour
         {
             _y = _groundY;
             _yVel = 0f;
-            _isGrounded = true;
         }
 
         // -------------------------
