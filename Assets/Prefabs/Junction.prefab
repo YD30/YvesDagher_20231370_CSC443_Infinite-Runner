@@ -340,7 +340,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 9048357619778739966}
-  - component: {fileID: 3901658135227923914}
   m_Layer: 0
   m_Name: Junction
   m_TagString: Untagged
@@ -368,25 +367,6 @@ Transform:
   - {fileID: 468213340168277841}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &3901658135227923914
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4319616489889811789}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8dff46c129df2479fa560e1e7a97151a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Chunk
-  length: 10
-  entry: -1
-  exit: -1
-  recommendedLane: 2
-  entryBuffer: 3
-  exitBuffer: 3
-  safeCoinLanes: -1
 --- !u!1 &4360081023746440989
 GameObject:
   m_ObjectHideFlags: 0
